@@ -1,4 +1,4 @@
-import { createStore } from "redux";
+import { createStore, combineReducers } from "redux";
 
 // action
 function incrementCounter() {
@@ -13,20 +13,42 @@ function decrementCounter() {
   };
 }
 
-function incrementCounterByAmount(amount) {
-    return {
-        type:"INCREMENT_COUNTER_BY_AMOUNT",
-        payload:amount
-    }
+function incrementCounterByAmount(amount = 1) {
+  return {
+    type: "INCREMENT_COUNTER_BY_AMOUNT",
+    payload: amount,
+  };
 }
 
-const initialState = {
+function incrementNumber() {
+  return {
+    type: "INCREMENT_NUMBER",
+  };
+}
+
+const initialCounterState = {
   counter: 0,
-  number: 5,
+};
+
+const initialNumberState = {
+  number: 0,
 };
 
 // reducer
-const counterReducer = (state = initialState, action) => {
+const numberReducer = (state = initialNumberState, action) => {
+  switch (action.type) {
+    case "INCREMENT_NUMBER": {
+      return {
+        ...state,
+        number: state.number + 1,
+      };
+    }
+    default:
+      return state;
+  }
+};
+
+const counterReducer = (state = initialCounterState, action) => {
   switch (action.type) {
     case "INCREMENT_COUNTER": {
       return {
@@ -40,18 +62,23 @@ const counterReducer = (state = initialState, action) => {
         counter: state.counter - 1,
       };
     }
-    case "INCREMENT_COUNTER_BY_AMOUNT":{
-        return {
-            ...state,
-            counter:state.counter + action.payload
-        }
+    case "INCREMENT_COUNTER_BY_AMOUNT": {
+      return {
+        ...state,
+        counter: state.counter + action.payload,
+      };
     }
     default:
       return state;
   }
 };
 
-const store = createStore(counterReducer);
+const rootReducers = combineReducers({
+  counter: counterReducer,
+  number: numberReducer,
+});
+
+const store = createStore(rootReducers);
 console.log(store.getState());
 
 store.dispatch(incrementCounter());
@@ -63,4 +90,7 @@ store.dispatch(decrementCounter());
 console.log(store.getState());
 
 store.dispatch(incrementCounterByAmount(7));
+console.log(store.getState());
+
+store.dispatch(incrementNumber());
 console.log(store.getState());
