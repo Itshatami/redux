@@ -13,6 +13,13 @@ function decrementCounter() {
   };
 }
 
+function incrementCounterByAmount(amount) {
+    return {
+        type:"INCREMENT_COUNTER_BY_AMOUNT",
+        payload:amount
+    }
+}
+
 const initialState = {
   counter: 0,
   number: 5,
@@ -33,6 +40,12 @@ const counterReducer = (state = initialState, action) => {
         counter: state.counter - 1,
       };
     }
+    case "INCREMENT_COUNTER_BY_AMOUNT":{
+        return {
+            ...state,
+            counter:state.counter + action.payload
+        }
+    }
     default:
       return state;
   }
@@ -47,4 +60,7 @@ store.dispatch(incrementCounter());
 console.log(store.getState());
 
 store.dispatch(decrementCounter());
+console.log(store.getState());
+
+store.dispatch(incrementCounterByAmount(7));
 console.log(store.getState());
